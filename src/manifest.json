@@ -1,0 +1,10 @@
+﻿{
+    "Name": "Saveshare",
+    "Author": "Jules White",
+    "Version": "0.0.1",
+    "Description": "Allows a global save of a multiplayer world",
+    "UniqueID": "JulesWhite.Saveshare",
+    "EntryDll": "Saveshare.dll",
+    "MinimumApiVersion": "3.0.0",
+    "UpdateKeys": []
+}
