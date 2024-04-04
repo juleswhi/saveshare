@@ -1,2 +1,5 @@
 **/.mono/
+**/bin/
+**/obj/
 .mono/
+
