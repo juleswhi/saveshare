@@ -107,16 +107,26 @@ internal class Server {
             "/health" => Health,
             "/xmlsave" => SaveXML,
             "/xmlget" => GetXML,
-                _ => null
+            _ => null
         };
 
     private async void GetXML(HttpListenerResponse response, string json)
     {
-        Logger.Log($"Request get some sweet sweet xml");
-        Logger.Log($"Accessing database");
-        await Database.GetSave(Convert.ToUInt64(json));
+        response.KeepAlive = true;
+        Logger.Log($"Request some sweet sweet xml");
 
-        byte[] buffer = Encoding.UTF8.GetBytes("XML Here");
+        var worldid = JsonConvert.DeserializeObject<ulong>(json);
+        var recentSave = await Database.GetSave(worldid);
+
+        if(recentSave is null) return;
+
+        var saveJson = JsonConvert.SerializeObject(
+                (recentSave.XML, 
+                 recentSave.GameFile, 
+                 recentSave.WorldID, 
+                 recentSave.CurrentHostID));
+
+        byte[] buffer = Encoding.UTF8.GetBytes(saveJson);
 
         response.OutputStream.Write(buffer, 0, buffer.Length);
         response.OutputStream.Close();
@@ -130,6 +140,8 @@ internal class Server {
            JsonConvert.DeserializeObject
                <(string, string, ulong, ulong)>
            (json);
+
+        Console.WriteLine($"{worldid}");
 
         var prevSave = await Database.GetSave(worldid);
 

@@ -28,15 +28,17 @@ internal static class Database {
         using var reader = await command.ExecuteReaderAsync();
 
         while(reader.Read()) {
-            s_conn.Close();
-            return new Save {
-                   ID = reader.GetGuid(0),
+            var save = new Save {
+                   ID = Guid.Parse(reader.GetString(0)),
                    XML = reader.GetString(1),
                    WorldID = (ulong)reader.GetInt64(2),
                    CurrentHostID = (ulong)reader.GetInt64(3),
                    Version = reader.GetInt32(4),
                    GameFile = reader.GetString(5)
             };
+
+            s_conn.Close();
+            return save;
         }
 
         s_conn.Close();
@@ -85,7 +87,7 @@ internal static class Database {
 
         using var command = new SQLiteCommand(sql, s_conn);
 
-        command.Parameters.AddWithValue("@ID", save.ID);
+        command.Parameters.AddWithValue("@ID", save.ID.ToString());
         command.Parameters.AddWithValue("@XML", save.XML);
         command.Parameters.AddWithValue("@WorldID", save.WorldID);
         command.Parameters.AddWithValue("@CurrentHostID", save.CurrentHostID);

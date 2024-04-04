@@ -45,14 +45,21 @@ internal static class Connection {
         
     }
 
-    public static async Task<string> GetXML(ulong id) {
+    public static async Task<(string, string, ulong, ulong)> GetXML(ulong id) {
         string json = JsonConvert.SerializeObject(id);
         StringContent content = new(json, Encoding.UTF8);
 
-        HttpResponseMessage _ =
+        HttpResponseMessage response =
             await s_client.PostAsync($"{BaseIp}xmlget", content);
 
-        return $"Getted XML";
+        if(!response.IsSuccessStatusCode) {
+            return default;
+        }
+
+        var obj = JsonConvert.DeserializeObject
+            <(string, string, ulong, ulong)>(await response.Content.ReadAsStringAsync());
+
+        return obj;
     }
 
     public static bool CheckValidIp() {

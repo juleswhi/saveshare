@@ -27,6 +27,13 @@ class ModEntry : Mod
 
             HandleMultiplayerPeers();
         };
+        helper.Events.GameLoop.SaveLoaded += async (s, e) => {
+            var worldid = Game1.uniqueIDForThisGame;
+
+            var data = await Connection.GetXML(worldid);
+
+            Monitor.Log($"Received xml: {data.Item3}", LogLevel.Info);
+        };
 
         // Display connection statius at any point
         helper.Events.Input.ButtonPressed += (_, e) => {
@@ -114,24 +121,31 @@ class ModEntry : Mod
                 new HUDMessage(message, code));
     }
 
-    private void SaveGameResponse(Farmer who, string id) {
+    private async void SaveGameResponse(Farmer who, string id) {
         Game1.addHUDMessage(new HUDMessage($"Farmer {who} chose {id}", 1));
 
         if(id != "1") {
             return;
         }
 
-        string path = PlayerFile();
+        string xmlPath = PlayerFile();
+        string gamePath = GameFile();
 
-        if(path == "") {
+        if(xmlPath == "" || gamePath == "") {
             return;
         }
 
-        Monitor.Log($"Found path: {path}", LogLevel.Info);
+        Monitor.Log($"Found path: {xmlPath}", LogLevel.Info);
 
-        string file = File.ReadAllText(path);
+        string xml = File.ReadAllText(xmlPath);
 
-        // Monitor.Log($"{file}", LogLevel.Info);
+        Monitor.Log($"data: {xml}");
+        string gameData = File.ReadAllText(gamePath);
+
+        await Connection.SendXML(xml, gameData, Game1.uniqueIDForThisGame, (ulong)Game1.player.UniqueMultiplayerID);
+
+        Game1.addHUDMessage(
+                new HUDMessage($"Sent Save File To Server!", 1));
     }
 
     private string PlayerFile() {
