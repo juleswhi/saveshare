@@ -160,7 +160,7 @@ internal class Server {
             return;
         }
 
-        Logger.Log($"Received Health Check");
+        // Logger.Log($"Received Health Check");
 
         byte[] buffer = Encoding.UTF8.GetBytes("Service Online.");
         response.ContentLength64 = buffer.Length;
