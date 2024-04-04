@@ -1,2 +1,8 @@
-# saveshare
-A mod for stardew to allow distributed hosting of a world
+# <center>Saveshare</center>
+
+<center>True Multiplayer for Stardew Valley</center>
+
+- Distributed version control for SMAPI Multiplayer Worlds 
+- No longer limited to one host 
+
+

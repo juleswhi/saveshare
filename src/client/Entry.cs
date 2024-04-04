@@ -37,17 +37,20 @@ class ModEntry : Mod
             new Response($"3", $"Don't Save")
         };
 
-        helper.Events.GameLoop.SaveLoaded += (s, e) => {
-            helper.Events.Input.ButtonPressed += (bs, be) => {
-                if(be.Button == SButton.F3) {
-                    string message = $"Save options:";
-                    Game1.currentLocation.createQuestionDialogue(
-                            message, 
-                            saveGameChoices.ToArray(), 
-                            new GameLocation.afterQuestionBehavior(
-                                SaveGameResponse));
-                }
-            };
+        helper.Events.Input.ButtonPressed += (bs, be) => {
+
+            if(!Game1.hasLoadedGame) {
+                return;
+            }
+
+            if(be.Button == SButton.F3) {
+                string message = $"Save options:";
+                Game1.currentLocation.createQuestionDialogue(
+                        message, 
+                        saveGameChoices.ToArray(), 
+                        new GameLocation.afterQuestionBehavior(
+                            SaveGameResponse));
+            }
         };
         
         // Ensure not blank
