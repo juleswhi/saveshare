@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "dgSpecHash": "UMmY/oFaN5FLqVmoDkieS0iC1vI6PP3/XU1o+QEBsyxULzwGxA/N1ghIYPOpiR7ud9gA5lefV79gfTN08u6xbw==",
+  "success": true,
+  "projectFilePath": "/home/juleswhite/projects/saveshare/src/client/saveshare.csproj",
+  "expectedPackageFiles": [
+    "/home/juleswhite/.nuget/packages/newtonsoft.json/13.0.3/newtonsoft.json.13.0.3.nupkg.sha512",
+    "/home/juleswhite/.nuget/packages/pathoschild.stardew.modbuildconfig/4.1.1/pathoschild.stardew.modbuildconfig.4.1.1.nupkg.sha512",
+    "/home/juleswhite/.nuget/packages/sqlite/3.13.0/sqlite.3.13.0.nupkg.sha512"
+  ],
+  "logs": []
+}

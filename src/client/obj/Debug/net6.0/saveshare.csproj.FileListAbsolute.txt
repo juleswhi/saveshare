@@ -1,0 +1,17 @@
+/home/juleswhite/projects/saveshare/src/bin/Debug/net6.0/saveshare.deps.json
+/home/juleswhite/projects/saveshare/src/bin/Debug/net6.0/saveshare.dll
+/home/juleswhite/projects/saveshare/src/obj/Debug/net6.0/saveshare.csproj.AssemblyReference.cache
+/home/juleswhite/projects/saveshare/src/obj/Debug/net6.0/saveshare.GeneratedMSBuildEditorConfig.editorconfig
+/home/juleswhite/projects/saveshare/src/obj/Debug/net6.0/saveshare.AssemblyInfoInputs.cache
+/home/juleswhite/projects/saveshare/src/obj/Debug/net6.0/saveshare.AssemblyInfo.cs
+/home/juleswhite/projects/saveshare/src/obj/Debug/net6.0/saveshare.csproj.CoreCompileInputs.cache
+/home/juleswhite/projects/saveshare/src/obj/Debug/net6.0/saveshare.dll
+/home/juleswhite/projects/saveshare/src/client/bin/Debug/net6.0/saveshare.deps.json
+/home/juleswhite/projects/saveshare/src/client/bin/Debug/net6.0/saveshare.dll
+/home/juleswhite/projects/saveshare/src/client/obj/Debug/net6.0/saveshare.csproj.AssemblyReference.cache
+/home/juleswhite/projects/saveshare/src/client/obj/Debug/net6.0/saveshare.GeneratedMSBuildEditorConfig.editorconfig
+/home/juleswhite/projects/saveshare/src/client/obj/Debug/net6.0/saveshare.AssemblyInfoInputs.cache
+/home/juleswhite/projects/saveshare/src/client/obj/Debug/net6.0/saveshare.AssemblyInfo.cs
+/home/juleswhite/projects/saveshare/src/client/obj/Debug/net6.0/saveshare.csproj.CoreCompileInputs.cache
+/home/juleswhite/projects/saveshare/src/client/obj/Debug/net6.0/saveshare.sourcelink.json
+/home/juleswhite/projects/saveshare/src/client/obj/Debug/net6.0/saveshare.dll
