@@ -124,7 +124,8 @@ internal class Server {
                 (recentSave.XML, 
                  recentSave.GameFile, 
                  recentSave.WorldID, 
-                 recentSave.CurrentHostID));
+                 recentSave.CurrentHostID,
+                 recentSave.Version));
 
         byte[] buffer = Encoding.UTF8.GetBytes(saveJson);
 

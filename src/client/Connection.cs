@@ -6,12 +6,14 @@ namespace Saveshare;
 internal static class Connection {
 
     public static string BaseIp { get; set; } = string.Empty;
+    public static bool IsConnected { get; set; } = false;
     private static HttpClient s_client { get; set; }
 
     static Connection() {
         s_client = new();
     }
 
+    // http://domain.name/health
     public static async Task<bool> CheckHealth() {
         try {
             // TODO: Dynamically based on last char "/" 
@@ -45,7 +47,7 @@ internal static class Connection {
         
     }
 
-    public static async Task<(string, string, ulong, ulong)> GetXML(ulong id) {
+    public static async Task<(string, string, ulong, ulong, int)> GetXML(ulong id) {
         string json = JsonConvert.SerializeObject(id);
         StringContent content = new(json, Encoding.UTF8);
 
@@ -56,8 +58,8 @@ internal static class Connection {
             return default;
         }
 
-        var obj = JsonConvert.DeserializeObject
-            <(string, string, ulong, ulong)>(await response.Content.ReadAsStringAsync());
+        (string, string, ulong, ulong, int) obj = JsonConvert.DeserializeObject
+            <(string, string, ulong, ulong, int)>(await response.Content.ReadAsStringAsync());
 
         return obj;
     }
