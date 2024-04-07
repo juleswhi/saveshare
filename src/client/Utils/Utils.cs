@@ -5,7 +5,7 @@ namespace Saveshare;
 internal static class Utils {
 
     public static IModHelper? Helper { get; set; }
-
+    public static IMonitor? Monitor { get; set; }
 
     public static bool IsWatchingWorld() {
         if(Helper is null || !Game1.hasLoadedGame) {
@@ -14,7 +14,7 @@ internal static class Utils {
 
         var config = Helper.ReadConfig<Config>();
 
-        if(!config.WatchedWorlds.Contains(Game1.uniqueIDForThisGame)) {
+        if(!config.WatchedWorlds.Any(x => x.WorldID == Game1.uniqueIDForThisGame)) {
             return false;
         }
 

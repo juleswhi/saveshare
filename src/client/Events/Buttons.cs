@@ -9,7 +9,6 @@ internal static class Buttons {
 
     public static void WatchWorldMenu
         (object? s, ButtonPressedEventArgs e) {
-
             if(!Game1.hasLoadedGame || e.Button != SButton.F3) 
                 return;
 
@@ -24,7 +23,7 @@ internal static class Buttons {
                             ? "Stop watching world"
                             : "Watch world"
                             )}"),
-                    new Response($"3", $"Back to game"),
+                    new Response($"2", $"Back to game"),
             };
 
             if(Game1.player.IsMainPlayer) {
@@ -40,11 +39,8 @@ internal static class Buttons {
                         $"Watch Options:", 
                         watchChoices.ToArray(), 
                         new GameLocation.afterQuestionBehavior(
-                            SaveGameResponse));
+                            WatchWorldResponse));
             }
-
-
-
         }
 
     public static void ConnectionStatusMenu
@@ -61,9 +57,28 @@ internal static class Buttons {
         }
 
     private static async void SaveGameResponse(Farmer who, string id) {
-        if(id != "1") {
+
+        if(Utils.Helper is null ||
+            Constants.SaveFolderName is null) {
             return;
         }
+
+        var config = Utils.Helper.ReadConfig<Config>();
+
+        if(id == "1" && !Utils.IsWatchingWorld()) {
+            config.WatchedWorlds.Add(
+                    new WorldWatch {
+                    WorldID = Game1.uniqueIDForThisGame,
+                    WorldName = Constants.SaveFolderName
+                    });
+
+        }
+        else if (id == "3") {
+            config.WatchedWorlds = config.WatchedWorlds.Where(
+                    x => x.WorldID != Game1.uniqueIDForThisGame).ToList();
+        }
+
+        Utils.Helper.WriteConfig<Config>(config);
 
         string xmlPath = Utils.PlayerFile();
         string gamePath = Utils.GameFile();
@@ -76,10 +91,34 @@ internal static class Buttons {
 
         string gameData = File.ReadAllText(gamePath);
 
-        await Connection.SendXML(xml, gameData, Game1.uniqueIDForThisGame, (ulong)Game1.player.UniqueMultiplayerID);
+        await Connection.SendXML(
+                xml, 
+                gameData, 
+                Game1.uniqueIDForThisGame, 
+                (ulong)Game1.player.UniqueMultiplayerID);
+        Utils.Monitor?.Log($"Sent xml to server", LogLevel.Info);
 
         Game1.addHUDMessage(
                 new HUDMessage($"Sent Save File To Server!", 1));
     }
 
+    private static void WatchWorldResponse(Farmer who, string id) {
+        if(
+            id != "1"
+            || Utils.IsWatchingWorld()
+            || Utils.Helper is null
+            || Constants.SaveFolderName is null) {
+            return;
+        }
+
+        var config = Utils.Helper.ReadConfig<Config>();
+
+        config.WatchedWorlds.Add(
+                new WorldWatch {
+                WorldID = Game1.uniqueIDForThisGame,
+                WorldName = Constants.SaveFolderName
+                });
+
+        Utils.Helper.WriteConfig<Config>(config);
+    }
 }

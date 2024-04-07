@@ -1,7 +1,4 @@
-using StardewValley;
 using StardewModdingAPI;
-using StardewModdingAPI.Events;
-using StardewValley.Menus;
 
 namespace Saveshare;
 
@@ -11,11 +8,13 @@ class ModEntry : Mod
     {
         Connection.BaseIp = Helper.ReadConfig<Config>().ServerAddr;
         Utils.Helper = helper;
+        Utils.Monitor = Monitor;
 
         helper.Events.GameLoop.UpdateTicked += Saveshare.Ticks.CheckHealth;
-        helper.Events.GameLoop.SaveLoaded += Saveshare.SaveLoaded.GetSaveInfo;
+        helper.Events.GameLoop.SaveLoaded += Saveshare.Saves.GetSaveInfo;
+        helper.Events.Input.ButtonPressed += Saveshare.Buttons.WatchWorldMenu;
+        helper.Events.Input.ButtonPressed += Saveshare.Buttons.ConnectionStatusMenu;
 
-        // Ensure not blank
         if(!Connection.CheckValidIp()) {
             Monitor.LogOnce($"Invalid IP Address in configuration file.", 
                     LogLevel.Warn);
