@@ -1,5 +1,6 @@
 **/.mono/
 **/bin/
 **/obj/
+**/Saveshare.db
 .mono/
 
