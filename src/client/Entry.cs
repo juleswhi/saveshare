@@ -14,6 +14,7 @@ class ModEntry : Mod
         helper.Events.GameLoop.SaveLoaded += Saveshare.Saves.GetSaveInfo;
         helper.Events.Input.ButtonPressed += Saveshare.Buttons.WatchWorldMenu;
         helper.Events.Input.ButtonPressed += Saveshare.Buttons.ConnectionStatusMenu;
+        helper.Events.GameLoop.GameLaunched += Saveshare.Load.OnLoad;
 
         if(!Connection.CheckValidIp()) {
             Monitor.LogOnce($"Invalid IP Address in configuration file.", 

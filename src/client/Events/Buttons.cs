@@ -6,7 +6,6 @@ using StardewValley.Menus;
 namespace Saveshare;
 
 internal static class Buttons {
-
     public static void WatchWorldMenu
         (object? s, ButtonPressedEventArgs e) {
             if(!Game1.hasLoadedGame || e.Button != SButton.F3) 
@@ -57,7 +56,6 @@ internal static class Buttons {
         }
 
     private static async void SaveGameResponse(Farmer who, string id) {
-
         if(Utils.Helper is null ||
             Constants.SaveFolderName is null) {
             return;
@@ -105,19 +103,26 @@ internal static class Buttons {
     private static void WatchWorldResponse(Farmer who, string id) {
         if(
             id != "1"
-            || Utils.IsWatchingWorld()
             || Utils.Helper is null
             || Constants.SaveFolderName is null) {
             return;
         }
 
+        var isWatching = Utils.IsWatchingWorld();
         var config = Utils.Helper.ReadConfig<Config>();
 
-        config.WatchedWorlds.Add(
-                new WorldWatch {
-                WorldID = Game1.uniqueIDForThisGame,
-                WorldName = Constants.SaveFolderName
-                });
+        if(isWatching) {
+            config.WatchedWorlds = config.WatchedWorlds.Where(
+                    x => x.WorldID != Game1.uniqueIDForThisGame).ToList();
+        }
+
+        else {
+            config.WatchedWorlds.Add(
+                    new WorldWatch {
+                    WorldID = Game1.uniqueIDForThisGame,
+                    WorldName = Constants.SaveFolderName
+                    });
+        }
 
         Utils.Helper.WriteConfig<Config>(config);
     }
