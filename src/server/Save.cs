@@ -8,10 +8,12 @@ internal class Save {
     public ulong WorldID { get; set; }
     public ulong CurrentHostID { get; set; }
     public int Version { get; set; }
+    public string Name { get; set; } 
 
     public Save() {
         ID = Guid.NewGuid();
         XML = "";
         GameFile = "";
+        Name = "";
     }
 }

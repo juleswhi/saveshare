@@ -34,7 +34,8 @@ internal static class Database {
                    WorldID = (ulong)reader.GetInt64(2),
                    CurrentHostID = (ulong)reader.GetInt64(3),
                    Version = reader.GetInt32(4),
-                   GameFile = reader.GetString(5)
+                   GameFile = reader.GetString(5),
+                   Name = reader.GetString(6)
             };
 
             s_conn.Close();
@@ -81,9 +82,9 @@ internal static class Database {
 
         string sql = 
             @"insert into Saves 
-                (ID, xml, WorldID, CurrentHostID, Version, GameFile)
+                (ID, xml, WorldID, CurrentHostID, Version, GameFile, Name)
                 values
-                (@ID, @XML, @WorldID, @CurrentHostID, @Version, @GameFile)";
+                (@ID, @XML, @WorldID, @CurrentHostID, @Version, @GameFile, @Name)";
 
         using var command = new SQLiteCommand(sql, s_conn);
 
@@ -93,6 +94,7 @@ internal static class Database {
         command.Parameters.AddWithValue("@CurrentHostID", save.CurrentHostID);
         command.Parameters.AddWithValue("@Version", save.Version);
         command.Parameters.AddWithValue("@GameFile", save.GameFile);
+        command.Parameters.AddWithValue("@Name", save.Name);
 
         await command.ExecuteNonQueryAsync();
 

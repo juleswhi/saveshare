@@ -47,7 +47,7 @@ internal static class Connection {
         
     }
 
-    public static async Task<(string, string, ulong, ulong, int)> GetXML(ulong id) {
+    public static async Task<(string, string, ulong, ulong, int, string)> GetXML(ulong id) {
         string json = JsonConvert.SerializeObject(id);
         StringContent content = new(json, Encoding.UTF8);
 
@@ -61,7 +61,7 @@ internal static class Connection {
         Utils.Monitor?.Log($"Before deserializing", StardewModdingAPI.LogLevel.Warn);
 
         var obj = JsonConvert.DeserializeObject
-            <(string, string, ulong, ulong, int)>(await response.Content.ReadAsStringAsync());
+            <(string, string, ulong, ulong, int, string)>(await response.Content.ReadAsStringAsync());
 
         Utils.Monitor?.Log($"After deserializing", StardewModdingAPI.LogLevel.Warn);
 

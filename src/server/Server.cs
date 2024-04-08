@@ -5,7 +5,6 @@ using Newtonsoft.Json;
 namespace SaveshareServer;
 
 internal class Server {
-
     private HttpListener? _listener;
     private CancellationTokenSource? _cts;
     private Config? _config;
@@ -125,7 +124,8 @@ internal class Server {
                  recentSave.GameFile, 
                  recentSave.WorldID, 
                  recentSave.CurrentHostID,
-                 recentSave.Version));
+                 recentSave.Version,
+                 recentSave.Name));
 
         byte[] buffer = Encoding.UTF8.GetBytes(saveJson);
 

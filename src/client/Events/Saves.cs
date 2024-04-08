@@ -8,7 +8,7 @@ internal static class Saves {
             if(!Game1.hasLoadedGame) return;
 
             var worldid = Game1.uniqueIDForThisGame;
-            (string xml, string gamefile, ulong id, ulong hostid, int version) 
+            (string xml, string gamefile, ulong id, ulong hostid, int version, string name) 
                 = await Connection.GetXML(worldid);
     }
 }

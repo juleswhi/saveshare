@@ -17,10 +17,15 @@ internal static class Load {
         }
 
         foreach(var save in config.WatchedWorlds) {
-            (string xml, string worldsave, var a, var b, int version) = await Connection.GetXML(save.WorldID);
+            (string xml, string worldsave, _, _, int version, string name) = await Connection.GetXML(save.WorldID);
 
-            using StreamWriter sw = new StreamWriter(
-                    $"{path}/{save.WorldName}/{save.WorldName}");
+            string newPath = $"{path}/{name}_{save.WorldID}/{name}_{save.WorldID}";
+
+            if(!File.Exists(newPath)) {
+                File.Create(newPath);
+            }
+
+            using StreamWriter sw = new StreamWriter(newPath);
 
             sw.Write($"{xml}");
 
