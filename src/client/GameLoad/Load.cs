@@ -16,8 +16,6 @@ internal static class Load {
             return;
         }
 
-        // Pull saves
-
         foreach(var save in config.WatchedWorlds) {
             (string xml, string worldsave, _, _, int version) = await Connection.GetXML(save.WorldID);
 
@@ -27,6 +25,7 @@ internal static class Load {
             sw.Write($"{xml}");
 
             Utils.Monitor?.Log($"Using streamwriter in the corect path: {save.WorldName}", LogLevel.Info);
+            Utils.Monitor?.Log($"Current Version: {version} of {save.WorldName}", LogLevel.Info);
         }
     }
 }
