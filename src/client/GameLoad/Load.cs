@@ -17,7 +17,7 @@ internal static class Load {
         }
 
         foreach(var save in config.WatchedWorlds) {
-            (string xml, string worldsave, _, _, int version) = await Connection.GetXML(save.WorldID);
+            (string xml, string worldsave, var a, var b, int version) = await Connection.GetXML(save.WorldID);
 
             using StreamWriter sw = new StreamWriter(
                     $"{path}/{save.WorldName}/{save.WorldName}");

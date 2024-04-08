@@ -58,8 +58,12 @@ internal static class Connection {
             return default;
         }
 
-        (string, string, ulong, ulong, int) obj = JsonConvert.DeserializeObject
+        Utils.Monitor?.Log($"Before deserializing", StardewModdingAPI.LogLevel.Warn);
+
+        var obj = JsonConvert.DeserializeObject
             <(string, string, ulong, ulong, int)>(await response.Content.ReadAsStringAsync());
+
+        Utils.Monitor?.Log($"After deserializing", StardewModdingAPI.LogLevel.Warn);
 
         return obj;
     }
