@@ -65,15 +65,13 @@ internal static class Buttons {
 
         if(id == "1" && !Utils.IsWatchingWorld()) {
             config.WatchedWorlds.Add(
-                    new WorldWatch {
-                    WorldID = Game1.uniqueIDForThisGame,
-                    WorldName = Constants.SaveFolderName
-                    });
+                    Constants.SaveFolderName
+                    );
 
         }
         else if (id == "3") {
             config.WatchedWorlds = config.WatchedWorlds.Where(
-                    x => x.WorldID != Game1.uniqueIDForThisGame).ToList();
+                    x => x != Constants.SaveFolderName).ToList();
         }
 
         Utils.Helper.WriteConfig<Config>(config);
@@ -113,15 +111,13 @@ internal static class Buttons {
 
         if(isWatching) {
             config.WatchedWorlds = config.WatchedWorlds.Where(
-                    x => x.WorldID != Game1.uniqueIDForThisGame).ToList();
+                    x => x!= Constants.SaveFolderName).ToList();
         }
 
         else {
             config.WatchedWorlds.Add(
-                    new WorldWatch {
-                    WorldID = Game1.uniqueIDForThisGame,
-                    WorldName = Constants.SaveFolderName
-                    });
+                    Constants.SaveFolderName
+                    );
         }
 
         Utils.Helper.WriteConfig<Config>(config);

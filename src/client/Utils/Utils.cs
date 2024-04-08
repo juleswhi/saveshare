@@ -14,7 +14,7 @@ internal static class Utils {
 
         var config = Helper.ReadConfig<Config>();
 
-        if(!config.WatchedWorlds.Any(x => x.WorldID == Game1.uniqueIDForThisGame)) {
+        if(!config.WatchedWorlds.Any(x => x == Constants.SaveFolderName)) {
             return false;
         }
 

@@ -17,20 +17,25 @@ internal static class Load {
         }
 
         foreach(var save in config.WatchedWorlds) {
-            (string xml, string worldsave, _, _, int version, string name) = await Connection.GetXML(save.WorldID);
 
-            string newPath = $"{path}/{name}_{save.WorldID}/{name}_{save.WorldID}";
+            _ = ulong.TryParse(save.Split("_")[0], out var id);
+
+            (string xml, string worldsave, _, _, int version, string name) = await Connection.GetXML(id);
+
+            Utils.Monitor?.Log($"Name is: {name}", LogLevel.Info);
+
+            string newPath = $"{path}/{name}_{id}/{name}_{id}";
+
+            Utils.Monitor?.Log($"Path is: {newPath}", LogLevel.Info);
 
             if(!File.Exists(newPath)) {
+                Utils.Monitor?.Log($"File does not exist, creating new one", LogLevel.Info);
                 File.Create(newPath);
             }
 
-            using StreamWriter sw = new StreamWriter(newPath);
+            File.WriteAllText(newPath, xml);
 
-            sw.Write($"{xml}");
-
-            Utils.Monitor?.Log($"Using streamwriter in the corect path: {save.WorldName}", LogLevel.Info);
-            Utils.Monitor?.Log($"Current Version: {version} of {save.WorldName}", LogLevel.Info);
+            Utils.Monitor?.Log($"corect path: {newPath}, where version is: {version}", LogLevel.Info);
         }
     }
 }
