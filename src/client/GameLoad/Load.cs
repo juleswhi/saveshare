@@ -51,13 +51,13 @@ internal static class Load {
                 File.Create(newPath);
             }
 
-            if(!File.Exists($"{path}/SaveGameInfo")) {
+            if(!File.Exists($"{path}/{name}/SaveGameInfo")) {
                 Utils.Monitor?.Log($"File does not exist, creating new one", LogLevel.Info);
-                File.Create($"{path}/SaveGameInfo");
+                File.Create($"{path}/{name}/SaveGameInfo");
             }
 
             File.WriteAllText(newPath, xml);
-            File.WriteAllText($"{path}/SaveGameInfo", worldsave);
+            File.WriteAllText($"{path}/{name}/SaveGameInfo", worldsave);
 
             Utils.Monitor?.Log($"corect path: {newPath}, where version is: {version}", LogLevel.Info);
         }
