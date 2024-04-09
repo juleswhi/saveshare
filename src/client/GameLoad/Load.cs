@@ -41,7 +41,6 @@ internal static class Load {
 
             Utils.Monitor?.Log($"Path is: {newPath}", LogLevel.Info);
 
-
             if(!Directory.Exists($"{path}/{name}")) {
                 Utils.Monitor?.Log($"Direcotry does not exist, creating new one", LogLevel.Info);
                 Directory.CreateDirectory($"{path}/{name}");
@@ -52,7 +51,13 @@ internal static class Load {
                 File.Create(newPath);
             }
 
+            if(!File.Exists($"{path}/SaveGameInfo")) {
+                Utils.Monitor?.Log($"File does not exist, creating new one", LogLevel.Info);
+                File.Create($"{path}/SaveGameInfo");
+            }
+
             File.WriteAllText(newPath, xml);
+            File.WriteAllText($"{path}/SaveGameInfo", worldsave);
 
             Utils.Monitor?.Log($"corect path: {newPath}, where version is: {version}", LogLevel.Info);
         }
