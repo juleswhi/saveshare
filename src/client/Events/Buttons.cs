@@ -81,7 +81,7 @@ internal static class Buttons {
         Utils.Helper.WriteConfig<Config>(config);
 
         string xmlPath = $"{Constants.SavesPath}/{Constants.SaveFolderName}/{Constants.SaveFolderName}";
-        string gamePath = $"{Constants.SaveFolderName}/SaveGameInfo";
+        string gamePath = $"{Constants.SavesPath}/{Constants.SaveFolderName}/SaveGameInfo";
 
         Utils.Monitor?.Log($"xml path: {xmlPath}", LogLevel.Info);
         Utils.Monitor?.Log($"game path: {gamePath}", LogLevel.Info);
