@@ -37,7 +37,7 @@ internal static class Load {
 
             Utils.Monitor?.Log($"Name is: {name}", LogLevel.Info);
 
-            string newPath = $"{path}/{name}_{id}/{name}_{id}";
+            string newPath = $"{path}/{name}/{name}";
 
             Utils.Monitor?.Log($"Path is: {newPath}", LogLevel.Info);
 
