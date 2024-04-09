@@ -33,7 +33,7 @@ internal static class Load {
                 return;
             }
 
-            (string xml, string worldsave, _, _, int version, string name) = await getxml;
+            (string xml, string worldsave, _, _, int version, string name) = (await getxml).Value;
 
             Utils.Monitor?.Log($"Name is: {name}", LogLevel.Info);
 

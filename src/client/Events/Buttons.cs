@@ -104,7 +104,7 @@ internal static class Buttons {
                 new HUDMessage($"Sent Save File To Server!", 1));
     }
 
-    private static void WatchWorldResponse(Farmer who, string id) {
+    private static async void WatchWorldResponse(Farmer who, string id) {
         if(
             id != "1"
             || Utils.Helper is null
@@ -117,13 +117,27 @@ internal static class Buttons {
 
         if(isWatching) {
             config.WatchedWorlds = config.WatchedWorlds.Where(
-                    x => x!= Constants.SaveFolderName).ToList();
+                    x => x != Constants.SaveFolderName).ToList();
         }
 
         else {
-            config.WatchedWorlds.Add(
-                    Constants.SaveFolderName
-                    );
+            var world = await Connection.GetXML(Game1.uniqueIDForThisGame);
+
+            if(world is null) {
+                Utils.Monitor?.Log(
+                        $"This world: {Game1.uniqueIDForThisGame} does not have a save file uploaded. Please tell the host to save", 
+                        LogLevel.Warn);
+                Game1.addHUDMessage(
+                        new HUDMessage($"No Save File Found :(", 3));
+            }
+
+            else {
+                config.WatchedWorlds.Add(
+                        world.Value.Item6
+                        );
+            }
+
+
         }
 
         Utils.Helper.WriteConfig<Config>(config);

@@ -48,7 +48,7 @@ internal static class Connection {
         
     }
 
-    public static async Task<(string, string, ulong, ulong, int, string)> GetXML(ulong id) {
+    public static async Task<(string, string, ulong, ulong, int, string)?> GetXML(ulong id) {
         string json = JsonConvert.SerializeObject(id);
         StringContent content = new(json, Encoding.UTF8);
 
