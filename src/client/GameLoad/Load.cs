@@ -39,6 +39,8 @@ internal static class Load {
 
             string newPath = $"{path}/{name}/{name}";
 
+            // TODO: try catch it up
+
             Utils.Monitor?.Log($"Path is: {newPath}", LogLevel.Info);
 
             if(!Directory.Exists($"{path}/{name}")) {

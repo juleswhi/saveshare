@@ -20,46 +20,4 @@ internal static class Utils {
 
         return true;
     }
-
-    public static string PlayerFile() {
-        string? path = GetSaveDirectory();
-        if(path is null) {
-            return "";
-        }
-
-        var filename = path.Split('/')[^1];
-        return $"{path}/{filename}";
-    }
-
-    public static string GameFile() {
-        string? path = GetSaveDirectory();
-
-        if(path is null) {
-            return "";
-        }
-
-        return $"{path}/SaveGameInfo";
-    }
-
-    private static string? GetSaveDirectory() {
-        if(Helper is null) return null;
-
-        string configFolder = Environment.GetFolderPath(
-                Environment.SpecialFolder.ApplicationData);
-
-        string saveDirectory = 
-            Constants.SavesPath;
-
-        string[] dirs = Directory.GetDirectories(saveDirectory);
-        foreach (string dir in dirs)
-        {
-            if(dir.Contains(Game1.GetSaveGameName())) {
-                return dir;
-            }
-
-        }
-
-        return null;
-    }
-
 }

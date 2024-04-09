@@ -80,15 +80,17 @@ internal static class Buttons {
 
         Utils.Helper.WriteConfig<Config>(config);
 
-        string xmlPath = Utils.PlayerFile();
-        string gamePath = Utils.GameFile();
+        string xmlPath = $"{Constants.SavesPath}/{Constants.SaveFolderName}/{Constants.SaveFolderName}";
+        string gamePath = $"{Constants.SaveFolderName}/{Constants.SaveFolderName}/SaveGameInfo";
+
+        Utils.Monitor?.Log($"xml path: {xmlPath}", LogLevel.Info);
+        Utils.Monitor?.Log($"game path: {gamePath}", LogLevel.Info);
 
         if(xmlPath == "" || gamePath == "") {
             return;
         }
 
         string xml = File.ReadAllText(xmlPath);
-
         string gameData = File.ReadAllText(gamePath);
 
         await Connection.SendXML(
