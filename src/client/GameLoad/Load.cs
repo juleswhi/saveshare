@@ -18,7 +18,9 @@ internal static class Load {
         }
 
         foreach(var save in config.WatchedWorlds) {
-            _ = ulong.TryParse(save.Split("_")[0], out var id);
+            Utils.Monitor?.Log($"save name is: {save}", LogLevel.Info);
+            _ = ulong.TryParse(save.Split("_")[^1], out var id);
+            Utils.Monitor?.Log($"save id is: {id}", LogLevel.Info);
 
             var getxml = Connection.GetXML(id);
 

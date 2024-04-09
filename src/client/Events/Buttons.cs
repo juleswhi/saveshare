@@ -95,7 +95,9 @@ internal static class Buttons {
                 xml, 
                 gameData, 
                 Game1.uniqueIDForThisGame, 
-                (ulong)Game1.player.UniqueMultiplayerID);
+                (ulong)Game1.player.UniqueMultiplayerID,
+                Constants.SaveFolderName
+                );
         Utils.Monitor?.Log($"Sent xml to server", LogLevel.Info);
 
         Game1.addHUDMessage(

@@ -138,12 +138,12 @@ internal class Server {
     }
 
     private async void SaveXML(HttpListenerResponse response, string json) {
-        (string xml, string gamefile, ulong worldid, ulong hostid) =
+        (string xml, string gamefile, ulong worldid, ulong hostid, string name) =
            JsonConvert.DeserializeObject
-               <(string, string, ulong, ulong)>
+               <(string, string, ulong, ulong, string)>
            (json);
 
-        Console.WriteLine($"{worldid}");
+        Console.WriteLine($"{worldid}, {name}");
 
         var prevSave = await Database.GetSave(worldid);
 
@@ -159,7 +159,8 @@ internal class Server {
                 WorldID = worldid,
                 GameFile = gamefile,
                 CurrentHostID = hostid,
-                Version = version
+                Version = version,
+                Name = name
                 }
                 );
 

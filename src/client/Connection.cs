@@ -32,10 +32,11 @@ internal static class Connection {
             string xml,
             string worldsave, 
             ulong worldid,
-            ulong hostid) {
+            ulong hostid,
+            string name) {
 
         string json = JsonConvert.SerializeObject(
-                (xml, worldsave, worldid, hostid)
+                (xml, worldsave, worldid, hostid, name)
                 );
 
         StringContent content = new(json, Encoding.UTF8);
