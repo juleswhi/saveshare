@@ -41,6 +41,12 @@ internal static class Load {
 
             Utils.Monitor?.Log($"Path is: {newPath}", LogLevel.Info);
 
+
+            if(!Directory.Exists($"{path}/{name}")) {
+                Utils.Monitor?.Log($"Direcotry does not exist, creating new one", LogLevel.Info);
+                Directory.CreateDirectory($"{path}/{name}");
+            }
+
             if(!File.Exists(newPath)) {
                 Utils.Monitor?.Log($"File does not exist, creating new one", LogLevel.Info);
                 File.Create(newPath);
