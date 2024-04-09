@@ -12,7 +12,7 @@ class ModEntry : Mod
         Utils.Monitor = Monitor;
 
         helper.Events.GameLoop.UpdateTicked += Saveshare.Ticks.CheckHealth;
-        helper.Events.GameLoop.SaveLoaded += Saveshare.Saves.GetSaveInfo;
+        // helper.Events.GameLoop.SaveLoaded += Saveshare.Saves.GetSaveInfo;
         helper.Events.Input.ButtonPressed += Saveshare.Buttons.WatchWorldMenu;
         helper.Events.Input.ButtonPressed += Saveshare.Buttons.ConnectionStatusMenu;
         helper.Events.GameLoop.GameLaunched += Saveshare.Load.OnLoad;

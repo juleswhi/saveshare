@@ -132,9 +132,7 @@ internal class Server {
         byte[] buffer = Encoding.UTF8.GetBytes(saveJson);
 
         response.OutputStream.Write(buffer, 0, buffer.Length);
-        Logger.Log($"Jus sent buffer: {saveJson}");
         response.OutputStream.Close();
-        Logger.Log($"Closed stream");
     }
 
     private async void SaveXML(HttpListenerResponse response, string json) {
@@ -143,7 +141,7 @@ internal class Server {
                <(string, string, ulong, ulong, string)>
            (json);
 
-        Console.WriteLine($"{worldid}, {name}");
+        Logger.Log($"{worldid}, {name}");
 
         var prevSave = await Database.GetSave(worldid);
 
