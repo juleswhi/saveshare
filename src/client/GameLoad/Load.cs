@@ -13,6 +13,7 @@ internal static class Load {
         var config = Utils.Helper?.ReadConfig<Config>();
 
         if(config is null) {
+            Utils.Monitor?.Log($"Configuration file was null", LogLevel.Warn);
             return;
         }
 

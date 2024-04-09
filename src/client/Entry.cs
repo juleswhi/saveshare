@@ -6,6 +6,7 @@ class ModEntry : Mod
 {
     public override async void Entry(IModHelper helper)
     {
+        // Make blank config file
         Connection.BaseIp = Helper.ReadConfig<Config>().ServerAddr;
         Utils.Helper = helper;
         Utils.Monitor = Monitor;
