@@ -111,9 +111,6 @@ internal class Server {
 
     private async void GetXML(HttpListenerResponse response, string json)
     {
-        response.KeepAlive = true;
-        Logger.Log($"Request some sweet sweet xml");
-
         var worldid = JsonConvert.DeserializeObject<ulong>(json);
         var recentSave = await Database.GetSave(worldid);
 
@@ -127,10 +124,17 @@ internal class Server {
                  recentSave.Version,
                  recentSave.Name));
 
+        if(saveJson is null || saveJson == "") {
+            Logger.Warn($"Save Json is not valid: request from {recentSave.WorldID}");
+            return;
+        }
+
         byte[] buffer = Encoding.UTF8.GetBytes(saveJson);
 
         response.OutputStream.Write(buffer, 0, buffer.Length);
+        Logger.Log($"Jus sent buffer: {saveJson}");
         response.OutputStream.Close();
+        Logger.Log($"Closed stream");
     }
 
     private async void SaveXML(HttpListenerResponse response, string json) {

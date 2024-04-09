@@ -20,7 +20,18 @@ internal static class Load {
         foreach(var save in config.WatchedWorlds) {
             _ = ulong.TryParse(save.Split("_")[0], out var id);
 
-            (string xml, string worldsave, _, _, int version, string name) = await Connection.GetXML(id);
+            var getxml = Connection.GetXML(id);
+
+            var timeout = Task.Delay(TimeSpan.FromSeconds(7));
+
+            var completed = await Task.WhenAny(getxml, timeout);
+
+            if(completed != getxml) {
+                Utils.Monitor?.Log($"Getting XML Took wayy to long", LogLevel.Warn);
+                return;
+            }
+
+            (string xml, string worldsave, _, _, int version, string name) = await getxml;
 
             Utils.Monitor?.Log($"Name is: {name}", LogLevel.Info);
 

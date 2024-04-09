@@ -11,6 +11,10 @@ internal static class Buttons {
             if(!Game1.hasLoadedGame || e.Button != SButton.F3) 
                 return;
 
+
+            // TODO: 
+            // Check if main user has saves on, and then let the user press f3
+
             Response[] saveChoices = new Response[] {
                 new Response($"1", $"Save"),
                 new Response($"3", $"Don't Save")
@@ -44,7 +48,7 @@ internal static class Buttons {
 
     public static void ConnectionStatusMenu
         (object? s, ButtonPressedEventArgs e) {
-            if(e.Button != SButton.F1) 
+            if(e.Button != SButton.F5) 
                 return;
 
             string connStatus = Connection.IsConnected 
