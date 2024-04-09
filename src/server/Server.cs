@@ -134,9 +134,6 @@ internal class Server {
     }
 
     private async void SaveXML(HttpListenerResponse response, string json) {
-        Logger.Log($"Save XML request");
-
-        // string, string, string, ulong, ulong
         (string xml, string gamefile, ulong worldid, ulong hostid) =
            JsonConvert.DeserializeObject
                <(string, string, ulong, ulong)>
@@ -162,7 +159,7 @@ internal class Server {
                 }
                 );
 
-        byte[] buffer = [];
+        byte[] buffer = Encoding.UTF8.GetBytes($"Saved XML");
 
         response.OutputStream.Write(buffer, 0, buffer.Length);
         response.OutputStream.Close();
@@ -172,8 +169,6 @@ internal class Server {
         if(_config is null || !_config.Routes.Contains("health")) {
             return;
         }
-
-        // Logger.Log($"Received Health Check");
 
         byte[] buffer = Encoding.UTF8.GetBytes("Service Online.");
         response.ContentLength64 = buffer.Length;
