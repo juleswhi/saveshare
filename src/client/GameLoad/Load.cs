@@ -17,7 +17,6 @@ internal static class Load {
         }
 
         foreach(var save in config.WatchedWorlds) {
-
             _ = ulong.TryParse(save.Split("_")[0], out var id);
 
             (string xml, string worldsave, _, _, int version, string name) = await Connection.GetXML(id);
