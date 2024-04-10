@@ -1,10 +1,8 @@
 using Newtonsoft.Json;
-using System.Text;
 
 namespace Saveshare;
 
 internal static class Connection {
-
     public static string BaseIp { get; set; } = string.Empty;
     public static bool IsConnected { get; set; } = false;
     private static HttpClient s_client { get; set; }
@@ -15,20 +13,13 @@ internal static class Connection {
 
     // http://domain.name/health
     public static async Task<bool> CheckHealth() {
-        try {
-            // TODO: Dynamically based on last char "/" 
-            HttpResponseMessage response = 
-                await s_client.GetAsync($"{BaseIp}health");
-
-            response.EnsureSuccessStatusCode();
-            return true;
-        }
-        catch(Exception) {
-            return false;
-        }
+        return await new HttpPacket {
+            Version = 1,
+            Type = HttpPacket.HttpPacketType.HEALTH
+        }.PostAysnc(s_client, BaseIp) is not null;
     }
 
-    public static async Task<string> SendXML(
+    public static async Task SendXML(
             string xml,
             string worldsave, 
             ulong worldid,
@@ -39,34 +30,27 @@ internal static class Connection {
                 (xml, worldsave, worldid, hostid, name)
                 );
 
-        StringContent content = new(json, Encoding.UTF8);
-
-        HttpResponseMessage _ =
-            await s_client.PostAsync($"{BaseIp}xmlsave", content);
-
-        return $"Sent data!";
-        
+        await new HttpPacket {
+            Version = 1,
+            Type = HttpPacket.HttpPacketType.XMLSAVE,
+            Data = json
+        }.PostAysnc(s_client, BaseIp);
     }
 
     public static async Task<(string, string, ulong, ulong, int, string)?> GetXML(ulong id) {
-        string json = JsonConvert.SerializeObject(id);
-        StringContent content = new(json, Encoding.UTF8);
+        var packet = await (new HttpPacket {
+            Version = 1,
+            Type = HttpPacket.HttpPacketType.XMLGET,
+            Data = JsonConvert.SerializeObject(id)
+        }.PostAysnc(s_client, BaseIp));
 
-        HttpResponseMessage response =
-            await s_client.PostAsync($"{BaseIp}xmlget", content);
-
-        if(!response.IsSuccessStatusCode) {
+        if(packet is null) {
             return default;
         }
 
-        Utils.Monitor?.Log($"Before deserializing", StardewModdingAPI.LogLevel.Warn);
-
-        var obj = JsonConvert.DeserializeObject
-            <(string, string, ulong, ulong, int, string)>(await response.Content.ReadAsStringAsync());
-
-        Utils.Monitor?.Log($"After deserializing", StardewModdingAPI.LogLevel.Warn);
-
-        return obj;
+        return JsonConvert.DeserializeObject
+            <(string, string, ulong, ulong, int, string)>
+            (packet.Data);
     }
 
     public static bool CheckValidIp() {

@@ -5,6 +5,8 @@ namespace SaveshareServer;
 internal class Config {
     public string HostAddress { get; set; } = string.Empty;
 
+    public ushort TCP_PROTOCOL_VERSION { get; set; } = 1;
+
     public string[] Routes = [
         "health",
         "xml-save",

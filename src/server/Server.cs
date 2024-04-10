@@ -74,11 +74,25 @@ internal class Server {
             var request = context.Request;
             var response = context.Response;
 
-            using var reader = new StreamReader(
-                    request.InputStream, 
-                    request.ContentEncoding);
+            using var reader = new BinaryReader(
+                    request.InputStream);
 
-            string res = await reader.ReadToEndAsync();
+            byte[] res = reader.ReadBytes((int)request.ContentLength64);
+
+            if(res is null || res.Length == 0) {
+                Logger.Warn($"Null Packet sent");
+                continue;
+            }
+
+            HttpPacket packet = HttpPacket.FromBytes(res);
+
+            var handle = HandlePath(packet.Type);
+            if(handle is null) {
+                Logger.Warn($"Invalid Packet Type");
+                continue;
+            }
+
+            handle(response, packet);
 
             if(request is null || request.Url is null) {
                 Logger.Warn($"Request is null. Panicing");
@@ -86,32 +100,20 @@ internal class Server {
                 Stop();
                 Environment.Exit(1);
             }
-
-            var handle = HandlePath(request!.Url!.AbsolutePath);
-            if(handle is null) {
-                Logger.Warn(@$"
-                        {request!.Url!.AbsoluteUri} is not a valid endpoint.
-                        ");
-            }
-            else {
-                handle(response, res);
-            }
         }
-
-        Logger.Log($"CTS Requested");
     }
 
-    private Action<HttpListenerResponse, string>? HandlePath(string path)
-        => path switch {
-            "/health" => Health,
-            "/xmlsave" => SaveXML,
-            "/xmlget" => GetXML,
+    private Action<HttpListenerResponse, HttpPacket>? HandlePath(HttpPacket.HttpPacketType type)
+        => type switch {
+            HttpPacket.HttpPacketType.HEALTH => Health,
+            HttpPacket.HttpPacketType.XMLSAVE=> SaveXML,
+            HttpPacket.HttpPacketType.XMLGET => GetXML,
             _ => null
         };
 
-    private async void GetXML(HttpListenerResponse response, string json)
+    private async void GetXML(HttpListenerResponse response, HttpPacket packet)
     {
-        var worldid = JsonConvert.DeserializeObject<ulong>(json);
+        var worldid = ulong.Parse(packet.Data);
         var recentSave = await Database.GetSave(worldid);
 
         if(recentSave is null) return;
@@ -129,17 +131,21 @@ internal class Server {
             return;
         }
 
-        byte[] buffer = Encoding.UTF8.GetBytes(saveJson);
+        byte[] buffer = new HttpPacket {
+            Version = _config!.TCP_PROTOCOL_VERSION,
+            Type = HttpPacket.HttpPacketType.WORLD_DATA,
+            Data = saveJson
+        }.ToBytes();
 
         response.OutputStream.Write(buffer, 0, buffer.Length);
         response.OutputStream.Close();
     }
 
-    private async void SaveXML(HttpListenerResponse response, string json) {
+    private async void SaveXML(HttpListenerResponse response, HttpPacket packet) {
         (string xml, string gamefile, ulong worldid, ulong hostid, string name) =
            JsonConvert.DeserializeObject
                <(string, string, ulong, ulong, string)>
-           (json);
+           (packet.Data);
 
         Logger.Log($"{worldid}, {name}");
 
@@ -162,18 +168,26 @@ internal class Server {
                 }
                 );
 
-        byte[] buffer = Encoding.UTF8.GetBytes($"Saved XML");
+
+        byte[] buffer = new HttpPacket {
+            Version = _config!.TCP_PROTOCOL_VERSION,
+            Type = HttpPacket.HttpPacketType.NIL
+        }.ToBytes();
 
         response.OutputStream.Write(buffer, 0, buffer.Length);
         response.OutputStream.Close();
     }
 
-    private void Health(HttpListenerResponse response, string _) {
+    private void Health(HttpListenerResponse response, HttpPacket packet) {
         if(_config is null || !_config.Routes.Contains("health")) {
             return;
         }
 
-        byte[] buffer = Encoding.UTF8.GetBytes("Service Online.");
+        byte[] buffer = new HttpPacket {
+            Version = _config!.TCP_PROTOCOL_VERSION,
+            Type = HttpPacket.HttpPacketType.NIL
+        }.ToBytes();
+
         response.ContentLength64 = buffer.Length;
         Stream output = response.OutputStream;
 

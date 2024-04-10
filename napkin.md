@@ -1,5 +1,5 @@
 Saveshare TCP Protocol
 
-2 Bits - Version
-2 Bits - Type
+2 Bytes - Version
+2 Bytes - Type
 Rest - Data
