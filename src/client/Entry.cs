@@ -1,4 +1,5 @@
 using StardewModdingAPI;
+using StardewValley;
 
 namespace Saveshare;
 
@@ -14,6 +15,13 @@ class ModEntry : Mod
         helper.Events.Input.ButtonPressed += Saveshare.Buttons.WatchWorldMenu;
         helper.Events.Input.ButtonPressed += Saveshare.Buttons.ConnectionStatusMenu;
         helper.Events.GameLoop.GameLaunched += Saveshare.Load.OnLoad;
+        helper.Events.Input.ButtonPressed += (s, e) => {
+            if(e.Button != SButton.F6) return;
+
+            // if(!Game1.hasLoadedGame) return;
+
+            Monitor.Log($"User ID is: {Game1.player.UniqueMultiplayerID}", LogLevel.Info);
+        };
 
         if(!Connection.CheckValidIp()) {
             Monitor.LogOnce($"Invalid IP Address in configuration file.", 

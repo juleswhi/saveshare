@@ -5,11 +5,7 @@ namespace Saveshare;
 
 internal static class Load {
     public static async void OnLoad(object? sender, GameLaunchedEventArgs e) {
-
-        Utils.Monitor?.Log($"Pulling Saves", LogLevel.Info);
-
         string path = Constants.SavesPath;
-
         var config = Utils.Helper?.ReadConfig<Config>();
 
         if(config is null) {
@@ -18,64 +14,72 @@ internal static class Load {
         }
 
         foreach(var save in config.WatchedWorlds) {
-            Utils.Monitor?.Log($"save name is: {save}", LogLevel.Info);
-            _ = ulong.TryParse(save.Split("_")[^1], out var id);
-            Utils.Monitor?.Log($"save id is: {id}", LogLevel.Info);
+            var parsed = ulong.TryParse(save.Split("_")[^1], out var id);
 
+            if(!parsed) {
+                Utils.Monitor?.Log($"Invalid save in saveshare/config.json", LogLevel.Warn);
+                continue;
+            }
+
+            // Give each query a 5 second timeout
             var getxml = Connection.GetXML(id);
-
-            var timeout = Task.Delay(TimeSpan.FromSeconds(7));
-
+            var timeout = Task.Delay(TimeSpan.FromSeconds(5));
             var completed = await Task.WhenAny(getxml, timeout);
 
             if(completed != getxml) {
                 Utils.Monitor?.Log($"Could not access XML in a timely manner :(", LogLevel.Warn);
-                return;
+                continue;
             }
 
             (string xml, string worldsave, _, _, int version, string name) = (await getxml).Value;
 
-            string newPath = $"{path}/{name}/{name}";
+            string worldPath = $"{path}/{name}";
+            string gamePath = $"{path}/{name}/{name}";
+            string savePath = $"{path}/{name}/SaveGameInfo";
+
+            if(!TryCreateDirectory(worldPath)) 
+                continue;
+
+            if(!TryCreateFile(gamePath)) 
+                continue;
+
+            if(!TryCreateFile(savePath)) 
+                continue;
 
             try {
-                if(!Directory.Exists($"{path}/{name}")) {
-                    Directory.CreateDirectory($"{path}/{name}");
-                }
+                File.WriteAllText(gamePath, xml);
+                File.WriteAllText(savePath, worldsave);
             }
             catch(Exception) {
-                Utils.Monitor?.Log($"Could not create directory.", LogLevel.Warn);
-                return;
-            }
-
-            try {
-                if(!File.Exists(newPath)) {
-                    Utils.Monitor?.Log($"File does not exist, creating new one", LogLevel.Info);
-                    File.Create(newPath);
-                }
-            }
-            catch(Exception) {
-                Utils.Monitor?.Log($"Could not create game file.", LogLevel.Warn);
-                return;
-            }
-
-            try {
-                if(!File.Exists($"{path}/{name}/SaveGameInfo")) {
-                    Utils.Monitor?.Log($"File does not exist, creating new one", LogLevel.Info);
-                    File.Create($"{path}/{name}/SaveGameInfo");
-                }
-            }
-            catch(Exception) {
-                Utils.Monitor?.Log($"Could not create game save file.", LogLevel.Warn);
-                return;
-            }
-
-            try {
-                File.WriteAllText(newPath, xml);
-                File.WriteAllText($"{path}/{name}/SaveGameInfo", worldsave);
-            }
-            catch(Exception) {
-                Utils.Monitor?.Log($"Could not write to files.", LogLevel.Warn);
+                Utils.Monitor?.Log($"Could not write to files. Could be a permissions issue.", LogLevel.Warn);
             }
         }
+    }
+
+    private static bool TryCreateFile(string path) {
+        try {
+            if(!File.Exists(path)) {
+                File.Create(path);
+            }
+            return true;
+        }
+        catch(Exception) {
+            Utils.Monitor?.Log($"Could not create file: {path}.", LogLevel.Warn);
+            return false;
+        }
+    }
+
+    private static bool TryCreateDirectory(string path) {
+        try {
+            if(!Directory.Exists(path)) {
+                Directory.CreateDirectory(path);
+            }
+
+            return true;
+        }
+        catch(Exception) {
+            return false;
+        }
+
     }
 }

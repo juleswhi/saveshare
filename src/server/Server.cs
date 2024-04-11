@@ -1,5 +1,5 @@
+using static SaveshareServer.Messages;
 using System.Net;
-using System.Text;
 using Newtonsoft.Json;
 
 namespace SaveshareServer;
@@ -14,15 +14,14 @@ internal class Server {
     }
 
     public async Task Run() {
-
         if(_config is null) {
-            Logger.Warn($"Configuration file was null");
-            Logger.Log($"Shutting Down..");
+            Logger.Warn(CONFIG_NULL);
+            Logger.Log(SERVER_STOP);
             return;
         }
 
-        Logger.Log($"Starting Server..");
-        Logger.Log($"Server running on: {_config.HostAddress}");
+        Logger.Log(SERVER_START);
+        Logger.Log(SERVER_PORT(_config));
 
         _listener = new();
         _cts = new();
@@ -32,11 +31,9 @@ internal class Server {
         } 
 
         catch(Exception ex) {
-            Logger.Warn($"Invalid IP/TCP Address. " + ex.Message);
+            Logger.Warn(INVALID_TCP(ex));
             return;
         }
-
-        Logger.Log($"Added addy to prefixes");
 
         await Listen();
     }
@@ -49,27 +46,23 @@ internal class Server {
 
         _listener.Start();
 
-        Logger.Log($"Http server started");
-
         try {
             await HandleRequests();
         }
 
         catch(Exception) {
-            Logger.Warn($"Listener Failed. Panicing");
-            Logger.Log($"Shutting Down.");
+            Logger.Warn(LISTENER_FAILED);
+            Logger.Log(SERVER_STOP);
             Environment.Exit(1);
         }
     }
 
     private async Task HandleRequests() {
-
         if(_listener is null || _cts is null) {
             return;
         }
 
         while(!_cts.IsCancellationRequested) {
-
             var context = await _listener.GetContextAsync();
             var request = context.Request;
             var response = context.Response;
@@ -80,23 +73,24 @@ internal class Server {
             byte[] res = reader.ReadBytes((int)request.ContentLength64);
 
             if(res is null || res.Length == 0) {
-                Logger.Warn($"Null Packet sent");
+                Logger.Warn(NULL_PACKET);
                 continue;
             }
 
             HttpPacket packet = HttpPacket.FromBytes(res);
 
             var handle = HandlePath(packet.Type);
+
             if(handle is null) {
-                Logger.Warn($"Invalid Packet Type");
+                Logger.Warn(INVALID_PACKET);
                 continue;
             }
 
             handle(response, packet);
 
             if(request is null || request.Url is null) {
-                Logger.Warn($"Request is null. Panicing");
-                Logger.Log($"Shutting Down..");
+                Logger.Warn(REQ_NULL);
+                Logger.Log(SERVER_STOP);
                 Stop();
                 Environment.Exit(1);
             }
@@ -127,7 +121,6 @@ internal class Server {
                  recentSave.Name));
 
         if(saveJson is null || saveJson == "") {
-            Logger.Warn($"Save Json is not valid: request from {recentSave.WorldID}");
             return;
         }
 
@@ -146,8 +139,6 @@ internal class Server {
            JsonConvert.DeserializeObject
                <(string, string, ulong, ulong, string)>
            (packet.Data);
-
-        Logger.Log($"{worldid}, {name}");
 
         var prevSave = await Database.GetSave(worldid);
 

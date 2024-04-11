@@ -41,22 +41,16 @@ internal class HttpPacket {
 
     public async Task<HttpPacket?> PostAysnc(HttpClient client, string ip) {
         var buf = ToBuf();
-        var res = await client.PostAsync($"{ip}", buf);
 
-        if(res is null) {
-            Utils.Monitor?.Log($"No response from post", StardewModdingAPI.LogLevel.Info);
-            return null;
-        }
+        HttpResponseMessage res;
 
         try {
+            res = await client.PostAsync($"{ip}", buf);
             res.EnsureSuccessStatusCode();
         }
         catch(Exception) {
-            Utils.Monitor?.Log($"Unsuccesful status code", 
-                    StardewModdingAPI.LogLevel.Warn);
             return null;
         }
-
 
         return HttpPacket.FromBytes(
                 await res.Content.ReadAsByteArrayAsync());

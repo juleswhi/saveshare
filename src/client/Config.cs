@@ -5,4 +5,5 @@ public sealed class Config {
     public bool DiscordLinked { get; set; } = false;
     public ushort PacketVersion { get; set; } = 1;
     public List<string> WatchedWorlds { get; set; } = new();
+    public ulong UniqueID { get; set; } = 0;
 }

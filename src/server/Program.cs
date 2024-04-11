@@ -1,6 +1,8 @@
-﻿using Newtonsoft.Json;
+﻿using static SaveshareServer.Messages;
+using Newtonsoft.Json;
 
 namespace SaveshareServer;
+
 internal class Program {
 
     public const string s_configPath = "config.json";
@@ -11,8 +13,8 @@ internal class Program {
 
     private static Config ReadConfig() {
         if(!File.Exists(s_configPath)) {
-            Logger.Warn($"No config file found at path");
-            Logger.Log($"Stopping server.");
+            Logger.Warn(CONFIG_NULL);
+            Logger.Log(SERVER_STOP);
             Environment.Exit(1);
         }
 
@@ -23,20 +25,17 @@ internal class Program {
             config = JsonConvert.DeserializeObject<Config>(file);
         }
         catch(Exception) {
-            Logger.Warn($"There is not valid json in the config.json");
-            Logger.Log($"Stopping Server.");
+            Logger.Warn(INVALID_JSON);
+            Logger.Log(SERVER_STOP);
             Environment.Exit(1);
         }
 
         if(config is null) {
-            Logger.Warn($"There is not valid json in the config.json");
-            Logger.Log($"Stopping Server.");
+            Logger.Warn(INVALID_JSON);
+            Logger.Log(SERVER_STOP);
             Environment.Exit(1);
         }
 
-        Logger.Log($"Parsed Json");
-
         return config!;
-
     }
 }

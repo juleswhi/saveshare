@@ -93,6 +93,8 @@ internal static class Buttons {
         string xml = File.ReadAllText(xmlPath);
         string gameData = File.ReadAllText(gamePath);
 
+        // var uniqueIdentifier = StardewValley.Multiplayer.
+
         await Connection.SendXML(
                 xml, 
                 gameData, 
