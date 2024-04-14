@@ -4,6 +4,15 @@ using StardewModdingAPI.Events;
 namespace Saveshare;
 
 internal static class Load {
+
+    public static void GenerateID(object? sender, GameLaunchedEventArgs e) {
+        var config = Utils.Helper?.ReadConfig<Config>();
+
+        if(config is null) {
+            return;
+        }
+    }
+
     public static async void OnLoad(object? sender, GameLaunchedEventArgs e) {
         string path = Constants.SavesPath;
         var config = Utils.Helper?.ReadConfig<Config>();
@@ -37,13 +46,13 @@ internal static class Load {
             string gamePath = $"{path}/{name}/{name}";
             string savePath = $"{path}/{name}/SaveGameInfo";
 
-            if(!TryCreateDirectory(worldPath)) 
+            if(!TryCreateDirectory(worldPath))
                 continue;
 
-            if(!TryCreateFile(gamePath)) 
+            if(!TryCreateFile(gamePath))
                 continue;
 
-            if(!TryCreateFile(savePath)) 
+            if(!TryCreateFile(savePath))
                 continue;
 
             try {

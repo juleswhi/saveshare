@@ -28,7 +28,7 @@ internal class Server {
 
         try {
             _listener.Prefixes.Add(_config.HostAddress);
-        } 
+        }
 
         catch(Exception ex) {
             Logger.Warn(INVALID_TCP(ex));
@@ -113,9 +113,9 @@ internal class Server {
         if(recentSave is null) return;
 
         var saveJson = JsonConvert.SerializeObject(
-                (recentSave.XML, 
-                 recentSave.GameFile, 
-                 recentSave.WorldID, 
+                (recentSave.XML,
+                 recentSave.GameFile,
+                 recentSave.WorldID,
                  recentSave.CurrentHostID,
                  recentSave.Version,
                  recentSave.Name));
