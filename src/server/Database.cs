@@ -22,9 +22,7 @@ internal static class Database {
             ";
 
         using var command = new SQLiteCommand(sql, s_conn);
-
         command.Parameters.AddWithValue("@WorldID", id);
-
         using var reader = await command.ExecuteReaderAsync();
 
         while(reader.Read()) {
@@ -80,8 +78,8 @@ internal static class Database {
     public static async Task CreateSave(Save save) {
         s_conn.Open();
 
-        string sql = 
-            @"insert into Saves 
+        string sql =
+            @"insert into Saves
                 (ID, xml, WorldID, CurrentHostID, Version, GameFile, Name)
                 values
                 (@ID, @XML, @WorldID, @CurrentHostID, @Version, @GameFile, @Name)";

@@ -3,7 +3,6 @@ using System.Text;
 namespace SaveshareServer;
 
 internal class HttpPacket {
-
     public ushort Version { get; set; }
     public HttpPacketType Type { get; set; }
     public string Data { get; set; } = string.Empty;
