@@ -34,13 +34,6 @@ internal class TcpPacket {
         return bytes.ToArray();
     }
 
-    private string? GetPath() => this.Command switch {
-        TcpCommand.Health => "health",
-        TcpCommand.Get => "xmlget",
-        TcpCommand.Save => "xmlsave",
-        _ => null
-    };
-
     public async Task<TcpPacket?> SendAsync(TcpClient? client) {
         if(client is null) return null;
 
@@ -74,13 +67,20 @@ internal class TcpPacket {
     }
 
     public static TcpPacket FromBytes(byte[] packet) {
-        // V | C | L | L | D
+        // V | S | C | L | L | D
         byte version = packet[0];
-        byte cmd = packet[1];
-        string data = Encoding.UTF8.GetString(packet[4..]);
+        byte status = packet[1];
+        byte cmd = packet[2];
+        string data = Encoding.UTF8.GetString(packet[5..]);
+
+
+
+
+
 
         return new TcpPacket {
             Version = version,
+            StatusCode = status,
             Command = (TcpCommand)cmd,
             Data = data
         };
